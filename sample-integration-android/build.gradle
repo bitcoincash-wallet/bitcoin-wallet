@@ -1,6 +1,6 @@
 apply plugin: 'com.android.application'
 repositories {
-    mavenLocal();
+    mavenLocal()
 }
 dependencies {
     compile(project(':integration-android')) {
@@ -10,8 +10,8 @@ dependencies {
 }
 
 android {
-    compileSdkVersion 'android-15'
-    buildToolsVersion '26.0.1'
+    compileSdkVersion compileSdk
+    buildToolsVersion buildTools
 
     lintOptions { abortOnError false }
 
