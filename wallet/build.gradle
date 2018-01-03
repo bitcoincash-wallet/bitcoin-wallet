@@ -46,7 +46,19 @@ android {
     }
 
     defaultConfig {
+        versionCode getGitCommitCount()
+        versionName versionNr + "." + versionCode + "-" + getLatestGitHash()
         generatedDensities = ['hdpi', 'xhdpi']
+
+        buildConfigField "String", "GIT_COMMIT_URL", "\"" + getGitCommitUrl() + "\""
+        buildConfigField "String", "GIT_UPSTREAM_COMMIT_URL", "\"" + getUpstreamGitCommitUrl() + "\""
+        buildConfigField "String", "GIT_UPSTREAM_TAG", "\"" + getUpstreamGitTag(getUpstreamGitHash()) + "\""
+        buildConfigField "String", "GIT_REPO_URL", "\"" + getGitRepoUrl() + "\""
+        buildConfigField "String", "GIT_TAG_URL", "\"" + getGitRepoUrl() + "/tags" + "\""
+        buildConfigField "String", "CI_BUILD_ID", "\"" + getBuildId() + "\""
+        buildConfigField "String", "CI_BUILD_URL", "\"" + getBuildUrl() + "\""
+
+        println "BuildUrl: " + getBuildUrl()
     }
 
     buildTypes {

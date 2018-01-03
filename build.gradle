@@ -9,6 +9,8 @@ buildscript {
         classpath('fr.avianey.androidsvgdrawable:gradle-plugin:3.0.0') {
             exclude group: 'xerces'
         }
+        // TODO enable for automatic upload
+        // classpath 'com.github.triplet.gradle:play-publisher:1.2.0'
     }
 }
 
@@ -20,3 +22,16 @@ allprojects {
        }
    }
 }
+
+// TODO enable for automatic upload
+//play {
+//    track = 'alpha'
+//    serviceAccountEmail = System.getenv('PLAY_SERVICE_MAIL')
+//    if (System.getenv("CI_SERVER")) {
+//        println "I run on Gitlab VersionCode:" + getGitCommitCount()
+//        pk12File = rootProject.file(System.getenv('PLAY_P12_FILE'))
+//    } else if (System.getenv("TRAVIS")) {
+//        println "I run on Travis VersionCode:" + getGitCommitCount()
+//        pk12File = rootProject.file("./travis/GooglePlay.p12")
+//    }
+//}

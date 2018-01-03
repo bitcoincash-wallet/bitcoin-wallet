@@ -23,6 +23,7 @@ android:
 branches:
   only:
   - master
+  - travisCash
 
 git:
   depth: 9999999
