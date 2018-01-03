@@ -1,0 +1,49 @@
+language: android
+
+android:
+
+  components:
+    - tools
+    - build-tools-27.0.2
+    - extra
+    - platform-tools
+    - android-15
+    - android-26
+    - android-27
+    - extra-google-google_play_services
+    - extra-google-m2repository
+    - extra-android-m2repository
+
+  licenses:
+    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+    - '.+'
+
+branches:
+  only:
+  - master
+
+git:
+  depth: 9999999
+
+before_install:
+  - git clone https://github.com/urho3d/android-ndk.git $HOME/android-ndk-root
+  - export ANDROID_NDK_HOME=$HOME/android-ndk-root
+  - git remote add upstream https://github.com/bitcoin-wallet/bitcoin-wallet
+  - git fetch upstream
+  - git checkout upstream/prod
+  - git checkout -b prod
+  - git checkout master
+  - ./travis/decrypt.sh
+
+script:
+  - ./travis/decrypt.sh
+  - ./gradlew clean :wallet:assembleRelease #:wallet:publishApkRelease -Dorg.gradle.project.track=alpha
+
+after_script:
+  - ./travis/cleanup.sh
+
+notifications:
+  email:
+    - hashengineeringsolutions@gmail.com
