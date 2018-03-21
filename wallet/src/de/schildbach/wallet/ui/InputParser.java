@@ -82,7 +82,7 @@ public abstract class InputParser {
         public void parse() {
             if (input.startsWith("BITCOINCASH:-")) {
                 try {
-                    final byte[] serializedPaymentRequest = Qr.decodeBinary(input.substring(9));
+                    final byte[] serializedPaymentRequest = Qr.decodeBinary(input.substring(13));
 
                     parseAndHandlePaymentRequest(serializedPaymentRequest);
                 } catch (final IOException x) {

@@ -360,17 +360,20 @@ public final class PaymentIntent implements Parcelable {
      * Check if given payment intent is only extending on <i>this</i> one, that is it does not alter any of
      * the fields. Address and amount fields must be equal, respectively (non-existence included).
      * 
-     * Alternatively, a BIP21+BIP72 request can provide a hash of the BIP70 request.
+     * Alternatively, a BIP21+BIP72 request can extend <i>this</i> one to add non-existent fields,
+     * but must include equal values for redundant fields.
      * 
      * @param other
      *            payment intent that is checked if it extends this one
      * @return true if it extends
      */
     public boolean isExtendedBy(final PaymentIntent other) {
-        // shortcut via hash
-        if (standard == Standard.BIP21 && other.standard == Standard.BIP70)
-            if (paymentRequestHash != null && Arrays.equals(paymentRequestHash, other.paymentRequestHash))
-                return true;
+        // shortcut non-backwards compatible BIP0072
+        if (standard == Standard.BIP21 && other.standard == Standard.BIP70) {
+            final boolean hasAddressConflict = hasAddress() && !equalsAddress(other);
+            final boolean hasAmountConflict = hasAmount() && !equalsAmount(other);
+            return !(hasAddressConflict || hasAmountConflict);
+        }
 
         // TODO memo
         return equalsAmount(other) && equalsAddress(other);
