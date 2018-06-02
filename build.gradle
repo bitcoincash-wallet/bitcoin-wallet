@@ -1,22 +1,43 @@
 buildscript {
     repositories {
+        google()
         jcenter()
     }
-
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.2'
-        classpath 'com.android.tools.build:gradle-experimental:0.7.0'
+        classpath 'com.android.tools.build:gradle:3.0.1'
+
+        classpath 'com.android.tools.build:gradle-experimental:0.11.1'
         classpath('fr.avianey.androidsvgdrawable:gradle-plugin:3.0.0') {
             exclude group: 'xerces'
         }
+        // TODO enable for automatic upload
+        // classpath 'com.github.triplet.gradle:play-publisher:1.2.0'
     }
 }
 
-allprojects {
-   repositories {
-       jcenter()
-       maven {
-           url 'https://maven.google.com'
-       }
-   }
+ext {
+    buildTools = "27.0.3"
+    compileSdk = 27
+    supportLib = "27.1.1"
 }
+
+allprojects {
+    repositories {
+        jcenter()
+        google()
+        maven { url 'https://jitpack.io' }
+    }
+}
+
+// TODO enable for automatic upload
+//play {
+//    track = 'alpha'
+//    serviceAccountEmail = System.getenv('PLAY_SERVICE_MAIL')
+//    if (System.getenv("CI_SERVER")) {
+//        println "I run on Gitlab VersionCode:" + getGitCommitCount()
+//        pk12File = rootProject.file(System.getenv('PLAY_P12_FILE'))
+//    } else if (System.getenv("TRAVIS")) {
+//        println "I run on Travis VersionCode:" + getGitCommitCount()
+//        pk12File = rootProject.file("./travis/GooglePlay.p12")
+//    }
+//}

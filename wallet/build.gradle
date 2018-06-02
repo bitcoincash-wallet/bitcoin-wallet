@@ -1,34 +1,36 @@
+import fr.avianey.androidsvgdrawable.gradle.SvgDrawableTask
+
 apply plugin: 'com.android.application'
 apply plugin: 'androidsvgdrawable'
-repositories {
-    mavenLocal();
-}
+
+def versionNr = '5'
+
 dependencies {
     compile(project(':integration-android')) {
         exclude(group: 'com.google.android', module: 'android')
     }
-    compile 'com.android.support:support-annotations:26.0.1'
-    compile 'com.android.support:support-compat:26.0.1'
-    compile('com.android.support:support-v13:26.0.1') {
+    compile "com.android.support:support-annotations:$supportLib"
+    compile "com.android.support:support-compat:$supportLib"
+    compile("com.android.support:support-v13:$supportLib") {
         exclude(group: 'com.android.support', module: 'support-fragment')
         exclude(group: 'com.android.support', module: 'support-media-compat')
     }
-    compile 'com.android.support:support-core-utils:26.0.1'
-    compile 'com.android.support:recyclerview-v7:26.0.1'
-    compile 'com.android.support:cardview-v7:26.0.1'
-    compile 'cash.bitcoinj:bitcoinj-core:0.15-SNAPSHOT'
+    compile "com.android.support:support-core-utils:$supportLib"
+    compile "com.android.support:recyclerview-v7:$supportLib"
+    compile "com.android.support:cardview-v7:$supportLib"
+    implementation 'com.github.bitcoincash-wallet:bitcoinj:cashaddr-enhance-SNAPSHOT' // it's better than 'com.github.bitcoincash-wallet:bitcoinj:b6360e0858'
     compile 'com.google.protobuf:protobuf-java:2.6.1'
     compile 'com.google.guava:guava:20.0'
-    compile 'com.google.zxing:core:3.3.0'
+    compile 'com.google.zxing:core:3.3.1'
     compile 'com.squareup.okhttp:okhttp:2.7.5'
     compile 'com.squareup.okhttp:logging-interceptor:2.7.5'
-    compile 'com.squareup.moshi:moshi:1.3.1'
-    compile 'org.slf4j:slf4j-api:1.7.22'
+    compile 'com.squareup.moshi:moshi:1.5.0'
+    compile 'org.slf4j:slf4j-api:1.7.25'
     compile('com.github.tony19:logback-android-classic:1.1.1-6') {
         exclude(group: 'com.google.android', module: 'android')
     }
     compile 'com.github.tony19:logback-android-core:1.1.1-6'
-    compile 'com.google.code.findbugs:jsr305:2.0.3'
+    compile 'com.google.code.findbugs:jsr305:3.0.2'
     testCompile 'junit:junit:4.12'
     compile 'org.apache.commons:commons-lang3:3.7'
 }
@@ -38,8 +40,8 @@ ext {
 }
 
 android {
-    compileSdkVersion 'android-26'
-    buildToolsVersion '26.0.1'
+    compileSdkVersion compileSdk
+    buildToolsVersion buildTools
 
     lintOptions {
         abortOnError false
@@ -47,7 +49,20 @@ android {
     }
 
     defaultConfig {
+        versionCode getGitCommitCount()
+        versionName versionNr + "." + versionCode + "-" + getLatestGitHash()
         generatedDensities = ['hdpi', 'xhdpi']
+        vectorDrawables.useSupportLibrary = true
+
+        buildConfigField "String", "GIT_COMMIT_URL", "\"" + getGitCommitUrl() + "\""
+        buildConfigField "String", "GIT_UPSTREAM_COMMIT_URL", "\"" + getUpstreamGitCommitUrl() + "\""
+        buildConfigField "String", "GIT_UPSTREAM_TAG", "\"" + getUpstreamGitTag(getUpstreamGitHash()) + "\""
+        buildConfigField "String", "GIT_REPO_URL", "\"" + getGitRepoUrl() + "\""
+        buildConfigField "String", "GIT_TAG_URL", "\"" + getGitRepoUrl() + "/tags" + "\""
+        buildConfigField "String", "CI_BUILD_ID", "\"" + getBuildId() + "\""
+        buildConfigField "String", "CI_BUILD_URL", "\"" + getBuildUrl() + "\""
+
+        println "BuildUrl: " + getBuildUrl()
     }
 
     buildTypes {
@@ -80,14 +95,18 @@ android {
         }
     }
 
+    flavorDimensions "kind"
     productFlavors {
         prod {
+            dimension "kind"
             applicationId = "com.hashengineering.bitcoincash.wallet"
         }
         _testnet {
+            dimension "kind"
             applicationId = "com.hashengineering.bitcoincash.wallet_test"
         }
         google_prod {
+            dimension "kind"
             applicationId = "com.hashengineering.bitcoincash.wallet"
         }
     }
@@ -103,9 +122,15 @@ android {
         exclude 'org.bitcoin.production.checkpoints.txt'
         exclude 'org.bitcoin.test.checkpoints.txt'
     }
+
+    // https://developer.android.com/studio/write/java8-support.html for details. Alternatively, increase the minSdkVersion to 26 or above.
+    compileOptions {
+        sourceCompatibility 1.8
+        targetCompatibility 1.8
+    }
 }
 
-task svgToPngMipmap(type: fr.avianey.androidsvgdrawable.gradle.SvgDrawableTask) {
+task svgToPngMipmap(type: SvgDrawableTask) {
     from = files('graphics/mipmap')
     to = file('res')
     targetedDensities = ['hdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi']
@@ -113,10 +138,76 @@ task svgToPngMipmap(type: fr.avianey.androidsvgdrawable.gradle.SvgDrawableTask) 
     outputType = 'mipmap'
 }
 
-task svgToPngMipmapProd(type: fr.avianey.androidsvgdrawable.gradle.SvgDrawableTask) {
+task svgToPngMipmapProd(type: SvgDrawableTask) {
     from = files('graphics/mipmap-prod')
     to = file('prod/res')
     targetedDensities = ['hdpi', 'xhdpi', 'xxhdpi', 'xxxhdpi']
     outputFormat = 'PNG'
     outputType = 'mipmap'
+}
+
+static def getGitCommitCount() {
+    def process = "git rev-list HEAD --count".execute()
+    return process.text.toInteger() + 17 // magic 17 to make previous squash work with VersionCode
+}
+
+static def getLatestGitHash() {
+    def process = "git rev-parse --short HEAD".execute()
+    return process.text.toString().trim()
+}
+
+static def getGitRepoUrl() {
+// Unfortunately to make it work needs an other Gitlab setup. Gitlab check out with internal hostname, not with external.
+// Cert handling with Apache/Ngnix makes it current impossible
+    if (System.getenv("CI_SERVER")) {
+        return "https://git.mxtracks.info/open-source/bitcoin-wallet"
+    } else {
+        def process = "git remote get-url origin --push".execute()
+        return process.text.toString().replace(".git", "").trim()
+    }
+}
+
+static def getBuildId() {
+    if (System.getenv("CI_SERVER")) {
+        return System.getenv("CI_BUILD_ID")
+    } else {
+        return System.getenv("TRAVIS_BUILD_ID")
+    }
+}
+
+static def getBuildUrl() {
+    if (System.getenv("CI_SERVER")) {
+        return getBuildId()
+    } else {
+        println "buildID:" + "https://travis-ci.org/" + System.getenv("TRAVIS_REPO_SLUG") + "/builds/" + getBuildId()
+        println "TRAVIS_BUILD_DIR:" + System.getenv("TRAVIS_BUILD_DIR")
+        println "TRAVIS_BUILD_ID:" + System.getenv("TRAVIS_BUILD_ID")
+        println "TRAVIS_BUILD_NUMBER:" + System.getenv("TRAVIS_BUILD_NUMBER")
+        println "TRAVIS_COMMIT:" + System.getenv("TRAVIS_COMMIT")
+        println "TRAVIS_COMMIT_MESSAGE:" + System.getenv("TRAVIS_COMMIT_MESSAGE")
+        println "TRAVIS_COMMIT_RANGE:" + System.getenv("TRAVIS_COMMIT_RANGE")
+        println "TRAVIS_JOB_ID:" + System.getenv("TRAVIS_JOB_ID")
+        println "TRAVIS_JOB_NUMBER:" + System.getenv("TRAVIS_JOB_NUMBER")
+        return "https://travis-ci.org/" + System.getenv("TRAVIS_REPO_SLUG") + "/builds/" + getBuildId()
+    }
+}
+
+static def getGitCommitUrl() {
+    return getGitRepoUrl() + "/commit/" + getLatestGitHash()
+}
+
+static def getUpstreamGitHash() {
+    def process = "git rev-parse --short @{-1}".execute()
+    return process.text.toString().trim()
+}
+
+static def getUpstreamGitTag(String hash) {
+    String cmd = "git log " + hash + " --no-walk --tags --pretty=\"%D\" --decorate=full -1"
+    def process = cmd.execute()
+    String result = process.text.toString().split(" ")[1];
+    return result.substring(result.lastIndexOf("/")+1).replace(",","")
+}
+
+static def getUpstreamGitCommitUrl() {
+    return "https://github.com/bitcoin-wallet/bitcoin-wallet/commit/" + getUpstreamGitHash()
 }

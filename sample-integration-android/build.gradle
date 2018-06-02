@@ -1,17 +1,14 @@
 apply plugin: 'com.android.application'
-repositories {
-    mavenLocal();
-}
 dependencies {
     compile(project(':integration-android')) {
         exclude(group: 'com.google.android', module: 'android')
     }
-    compile 'cash.bitcoinj:bitcoinj-core:0.15-SNAPSHOT'
+    implementation 'com.github.bitcoincash-wallet:bitcoinj:cashaddr-enhance-SNAPSHOT' // it's better than 'com.github.bitcoincash-wallet:bitcoinj:b6360e0858'
 }
 
 android {
-    compileSdkVersion 'android-15'
-    buildToolsVersion '26.0.1'
+    compileSdkVersion compileSdk
+    buildToolsVersion buildTools
 
     lintOptions { abortOnError false }
 
