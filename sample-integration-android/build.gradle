@@ -6,7 +6,7 @@ dependencies {
     compile(project(':integration-android')) {
         exclude(group: 'com.google.android', module: 'android')
     }
-    compile 'cash.bitcoinj:bitcoinj-core:0.15-SNAPSHOT'
+    compile 'cash.bitcoinj:bitcoinj-core:0.14-SNAPSHOT'
 }
 
 android {
