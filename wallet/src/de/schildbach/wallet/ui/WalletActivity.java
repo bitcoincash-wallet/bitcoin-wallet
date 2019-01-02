@@ -436,6 +436,8 @@ public final class WalletActivity extends AbstractBindServiceActivity
             return createRestoreWalletPermissionDialog();
         else if (id == DIALOG_RESTORE_WALLET)
             return createRestoreWalletDialog();
+        else if(id == DIALOG_RESTORE_WALLET_FROM_SEED)
+            return createRestoreWalletFromSeedDialog();
         else
             throw new IllegalArgumentException();
     }
