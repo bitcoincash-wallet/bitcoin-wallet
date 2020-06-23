@@ -18,6 +18,27 @@ v5.27.0
 * Replace Bitcoin with Bitcoin Cash
 
 -------------Bitcoin Wallet
+v5.45
+
+* Clarify message when fetching/validating the payment request fails.
+
+v5.44
+
+* Add live.blockcypher.com to block explorers and remove blockexplorer.com.
+* Update translations from Transifex.
+
+v5.42-v5.43
+
+* Add a warning dialog regarding a relatively high fee.
+
+v5.41
+
+* Fix crash with very inflated fiat currencies.
+
+v5.40
+
+* Update dependencies.
+
 v5.39
 
 * Adjust the static network fees used for sanity checks and fallbacks.
