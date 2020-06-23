@@ -1,8 +1,11 @@
 Bitcoin Cash Wallet
+v5.39.5
+* Add feature to get mnemonic seed
+
 v5.39.1
-* Update Electon Cash Servers for Paper Wallet Sweep
+* Update Electron Cash Servers for Paper Wallet Sweep
 * Rename BCC to BCH
-* Rename Bitcoins to Bitcoin Cash in most places
+* Rename Bitcoin to Bitcoin Cash in most places
 * Hide RBF menu item for unconfirmed transactions
 
 v5.39.0
