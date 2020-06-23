@@ -1,4 +1,4 @@
-apply plugin: 'com.android.model.native'
+/*apply plugin: 'com.android.model.native'
 
 model {
     android {
@@ -20,10 +20,10 @@ model {
             }
         }
     }
-}
+}*/
 
-task(copy, type: Copy) {
+/*task(copy, type: Copy) {
     dependsOn assemble // trigger build
     from 'build/outputs/native/release/lib'
     into '../wallet/libs/'
-}
+}*/
