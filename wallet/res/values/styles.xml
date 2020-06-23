@@ -33,6 +33,12 @@
         <item name="android:displayOptions">showTitle</item>
     </style>
 
+	<style name="NewDialogTheme" parent="@android:style/Theme.Holo.Light.Dialog">
+		<!--item name="android:colorAccent">@color/strong_blue_bis</item-->
+		<item name="android:textColorPrimary">@color/strong_blue_bis</item>
+		<item name="android:windowBackground">@color/white</item>
+	</style>
+
     <style name="My.Widget.ActionBar.ChildActivity" parent="@style/My.Widget.ActionBar">
         <item name="android:displayOptions">homeAsUp|showTitle</item>
     </style>
