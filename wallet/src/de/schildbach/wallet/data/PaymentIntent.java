@@ -24,6 +24,7 @@ import java.util.Arrays;
 import javax.annotation.Nullable;
 
 import org.bitcoinj.core.Address;
+import org.bitcoinj.core.AddressFactory;
 import org.bitcoinj.core.AddressFormatException;
 import org.bitcoinj.core.CashAddress;
 import org.bitcoinj.core.Coin;
@@ -204,7 +205,7 @@ public final class PaymentIntent implements Parcelable {
     public static PaymentIntent from(final String address, @Nullable final String addressLabel,
             @Nullable final Coin amount) throws WrongNetworkException, AddressFormatException {
         return new PaymentIntent(null, null, null,
-                buildSimplePayTo(amount, Address.fromBase58(Constants.NETWORK_PARAMETERS, address)), addressLabel, null,
+                buildSimplePayTo(amount, AddressFactory.create().getAddress(Constants.NETWORK_PARAMETERS, address)), addressLabel, null,
                 null, null, null, false);
     }
 
