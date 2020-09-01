@@ -1,2 +1,7 @@
 tls:abc.vom-stausee.de:52002
 tls:electrum.leblancnet.us:50012
+tls:bch.imaginary.cash:50002
+tls:bch0.kister.net:50002
+tls:electrum.imaginary.cash:50002
+tls:blackie.c3-soft.com:50002
+tls:electron.jochen-hoenicke.de:51002
